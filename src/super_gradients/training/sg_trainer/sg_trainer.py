@@ -1250,6 +1250,10 @@ class Trainer:
 
         self.net = model
 
+        # Store the metric to follow (loss\accuracy) and initialize as the worst value
+        self.metric_to_watch = self.training_params.metric_to_watch
+        self.greater_metric_to_watch_is_better = self.training_params.greater_metric_to_watch_is_better
+
         self._prep_net_for_train()
         self._load_checkpoint_to_model()
         if not self.ddp_silent_mode:
@@ -1264,10 +1268,6 @@ class Trainer:
         self._set_train_metrics(train_metrics_list=self.training_params.train_metrics_list)
         self._set_valid_metrics(valid_metrics_list=self.training_params.valid_metrics_list)
         self.test_metrics = self.valid_metrics.clone()
-
-        # Store the metric to follow (loss\accuracy) and initialize as the worst value
-        self.metric_to_watch = self.training_params.metric_to_watch
-        self.greater_metric_to_watch_is_better = self.training_params.greater_metric_to_watch_is_better
 
         # Allowing loading instantiated loss or string
         if isinstance(self.training_params.loss, str):
